@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -20,10 +35,11 @@
             <div class="navbar-user">
                 <div class="navbar-user-icon">👤</div>
                 <div class="navbar-user-info">
-                    <span>Bună dimineața,<br><strong>User</strong></span>
+                    <span>Bună dimineața,<br><strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong></span>
+
                     <a href='#'><small>TIMPI DUMNEAVOASTRĂ</small></a>
                 </div>
-                <button>Deconectare</button>
+                <a href="?logout=1" class="btn btn-outline-danger">Deconectare</a>
             </div>
         </nav>
         <h1>Depunere cerere nouă</h1>
@@ -64,21 +80,26 @@
                     </div>
                     <div class="modal-body">
                         <div class="container">
-                            <form>
-                                <div class="mb-3">
-                                    <label for="captcha" class="form-label">CAPTCHA</label>
-                                    <input class="form-control" type="text" id="captchaText">
-                                </div>
+                            <form id="uploadForm">
                                 <div class="mb-3">
                                     <label for="formFile" class="form-label">Alegeți fișierul</label>
                                     <input class="form-control" type="file" id="formFile">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="captchaText" class="form-label">Introduceți codul din imagine</label>
+                                    <div style="margin-bottom:8px;">
+                                        <img src="captcha.php?rand=" id="captchaImage" style="border-radius:6px;vertical-align:middle;cursor:pointer;" title="Reîncarcă codul">
+                                        <button type="button" id="refreshCaptcha" class="btn btn-sm btn-outline-secondary" style="margin-left:6px;vertical-align:middle;">↻</button>
+                                    </div>
+                                    <input class="form-control" type="text" id="captchaText" placeholder="Codul din imagine">
+                                    <div id="captchaError" style="color:red;display:none;font-size:0.95em;margin-top:4px;">Cod incorect!</div>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <a href="loadDocumetns.html"  type="button" class="btn btn-primary">Save changes</a>
+                        <a href="loadDocumetns.html" id="saveChangesBtn" type="button" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true">Save changes</a>
                     </div>
                     </div>
                 </div>
@@ -93,5 +114,57 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+    function disableSaveBtn() {
+        var saveBtn = document.getElementById('saveChangesBtn');
+        saveBtn.classList.add('disabled');
+        saveBtn.setAttribute('aria-disabled', 'true');
+        saveBtn.setAttribute('tabindex', '-1');
+    }
+    function enableSaveBtn() {
+        var saveBtn = document.getElementById('saveChangesBtn');
+        saveBtn.classList.remove('disabled');
+        saveBtn.removeAttribute('aria-disabled');
+        saveBtn.removeAttribute('tabindex');
+    }
+    // Refresh captcha image
+    function refreshCaptcha() {
+        var img = document.getElementById('captchaImage');
+        img.src = 'captcha.php?rand=' + Math.random();
+        document.getElementById('captchaText').value = '';
+        document.getElementById('captchaError').style.display = 'none';
+        disableSaveBtn();
+    }
+    document.getElementById('refreshCaptcha').onclick = refreshCaptcha;
+    document.getElementById('captchaImage').onclick = refreshCaptcha;
+    // Validate captcha input via AJAX
+    function checkCaptchaInput() {
+        var val = document.getElementById('captchaText').value.trim();
+        if (val.length === 0) {
+            document.getElementById('captchaError').style.display = 'none';
+            disableSaveBtn();
+            return;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'captcha_check.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200 && xhr.responseText === 'OK') {
+                enableSaveBtn();
+                document.getElementById('captchaError').style.display = 'none';
+            } else {
+                disableSaveBtn();
+                document.getElementById('captchaError').style.display = 'block';
+            }
+        };
+        xhr.send('captcha=' + encodeURIComponent(val));
+    }
+    document.getElementById('captchaText').addEventListener('input', checkCaptchaInput);
+    // When modal opens, refresh captcha and disable button
+    var exampleModal = document.getElementById('exampleModal');
+    exampleModal.addEventListener('show.bs.modal', function () {
+        refreshCaptcha();
+    });
+    </script>
 </body>
 </html>
