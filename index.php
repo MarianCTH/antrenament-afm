@@ -22,6 +22,7 @@ if (isset($_GET['logout'])) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -68,22 +69,22 @@ if (isset($_GET['logout'])) {
                 </div>
             </div>
             <div class="container transparent d-flex justify-content-between">
-                <a href="#" class="download-btn">⬇️ Descarcă model cerere</a>
+                <a href="CF_AFM_Tractoare_v1 .pdf" class="download-btn" download="CF_AFM_Tractoare_v1">⬇️ Descarcă model cerere</a>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="download-btn">⬆️ Incarcă model cerere</button>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog-centered modal-dialog">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Incarca modelul de cerere</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container">
-                            <form id="uploadForm">
+                            <form id="uploadForm" enctype="multipart/form-data" method="post">
                                 <div class="mb-3">
                                     <label for="formFile" class="form-label">Alegeți fișierul</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input class="form-control" type="file" id="formFile" name="file" accept=".pdf" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="captchaText" class="form-label">Introduceți codul din imagine</label>
@@ -92,14 +93,14 @@ if (isset($_GET['logout'])) {
                                         <button type="button" id="refreshCaptcha" class="btn btn-sm btn-outline-secondary" style="margin-left:6px;vertical-align:middle;">↻</button>
                                     </div>
                                     <input class="form-control" type="text" id="captchaText" placeholder="Codul din imagine">
-                                    <div id="captchaError" style="color:red;display:none;font-size:0.95em;margin-top:4px;">Cod incorect!</div>
+                                    <div id="captchaError" style="color:red;display:none;font-size:0.95em;margin-top:4px;margin-bottom:-5%;padding-bottom:-6%;"></div>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <a href="loadDocumetns.html" id="saveChangesBtn" type="button" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true">Save changes</a>
+                        <button type="button" id="saveChangesBtn" type="button" class="btn btn-primary" tabindex="-1">Save changes</a>
                     </div>
                     </div>
                 </div>
@@ -115,25 +116,52 @@ if (isset($_GET['logout'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
-    function disableSaveBtn() {
-        var saveBtn = document.getElementById('saveChangesBtn');
-        saveBtn.classList.add('disabled');
-        saveBtn.setAttribute('aria-disabled', 'true');
-        saveBtn.setAttribute('tabindex', '-1');
-    }
-    function enableSaveBtn() {
-        var saveBtn = document.getElementById('saveChangesBtn');
-        saveBtn.classList.remove('disabled');
-        saveBtn.removeAttribute('aria-disabled');
-        saveBtn.removeAttribute('tabindex');
-    }
+    var fileUploaded = false;
+    var captchaValid = false;
+    $('#saveChangesBtn').on('click', function() {
+        if (!fileUploaded) {
+            $('#captchaError').text('Trebuie să încărcați un fișier înainte de a salva modificările.').show();
+            return;
+        }
+        if (!captchaValid) {
+            $('#captchaError').text('Captcha nu este valid. Vă rugăm să reintroduceți codul.').show();
+            return;
+        }
+        var fileInput = $('#formFile')[0];
+        var formData = new FormData();
+        formData.append('file', fileInput.files[0]);    
+
+        $.ajax({
+            url: 'upload_handler.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                console.log('Upload successful:', response); // No JSON.parse!
+                if (response.status === 'success') {
+                    window.location.href = 'loadDocumetns.html';
+                } else {
+                    alert('Eroare: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Upload error:', error);
+                alert('A apărut o eroare la trimiterea fișierului.');
+            }
+        });
+    })
+    
+    $('#formFile').change(function() {
+        fileUploaded = true;
+    })
+
     // Refresh captcha image
     function refreshCaptcha() {
         var img = document.getElementById('captchaImage');
         img.src = 'captcha.php?rand=' + Math.random();
         document.getElementById('captchaText').value = '';
         document.getElementById('captchaError').style.display = 'none';
-        disableSaveBtn();
     }
     document.getElementById('refreshCaptcha').onclick = refreshCaptcha;
     document.getElementById('captchaImage').onclick = refreshCaptcha;
@@ -142,7 +170,6 @@ if (isset($_GET['logout'])) {
         var val = document.getElementById('captchaText').value.trim();
         if (val.length === 0) {
             document.getElementById('captchaError').style.display = 'none';
-            disableSaveBtn();
             return;
         }
         var xhr = new XMLHttpRequest();
@@ -150,10 +177,9 @@ if (isset($_GET['logout'])) {
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
             if (xhr.status === 200 && xhr.responseText === 'OK') {
-                enableSaveBtn();
+                captchaValid = true;
                 document.getElementById('captchaError').style.display = 'none';
             } else {
-                disableSaveBtn();
                 document.getElementById('captchaError').style.display = 'block';
             }
         };

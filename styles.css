@@ -222,3 +222,7 @@ h1 {
         flex-direction: column;
     }
 }
+
+.file-upload {
+    display: none;
+}

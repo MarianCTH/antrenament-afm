@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -58,35 +59,101 @@
                 <tbody>
                     <tr>
                         <td colspan="11" class="py-3">a) cererea de finanțare, completată integral prin tehnoredactare, semnată cu semnătură electronică calificată bazată pe un certificat calificat emis de un prestator de servicii de încredere conform Regulamentului (UE) 910/2014</td>
-                        <td class="col-1"><button class="btn btn-green" disabled>✅</button></td>
+                        <td class="col-1">
+                            <input type="file" id="fileUpload" class="file-upload" name="fileUpload" disabled>
+                            <label for="" class="btn btn-green">
+                                ✅
+                            </label>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="11" class="py-3">b) actul de identitate al solicitantului, valabil la momentul înscrierii în aplicație;</td>
-                        <td class="col-1"><button class="btn btn-primary">⬆️</button></td>
+                        <td class="col-1">
+                            <input type="file" id="fileUpload0" class="file-upload" name="fileUpload0">
+                            <label for="fileUpload0" class="btn btn-primary">
+                                ⬆️
+                            </label>
+                        </td>
                     </tr>
                      <tr>
                         <td colspan="11" class="py-3">c) certificatul de atestare fiscală privind obligațiile de plată către bugetul de stat, emis pe numele solicitantului de către organul teritorial de specialitate al Ministerului Finanțelor, în termen de valabilitate la momentul înscrierii în aplicație;</td>
-                        <td class="col-1"><button class="btn btn-primary">⬆️</button></td>
+                        <td class="col-1">
+                            <input type="file" id="fileUpload1" class="file-upload" name="fileUpload1">
+                            <label for="fileUpload1" class="btn btn-primary">
+                                ⬆️
+                            </label>
+                        </td>
                     </tr>
                      <tr>
                         <td colspan="11" class="py-3">d) certificatul de atestare fiscală privind impozitele și taxele locale și alte venituri ale bugetului local, emis pe numele solicitantului de către autoritatea publică locală în a cărei rază teritorială își are domiciliul, în termen de valabilitate la momentul înscrierii în aplicație;</td>
-                        <td class="col-1"><button class="btn btn-primary">⬆️</button></td>
+                        <td class="col-1">
+                            <input type="file" id="fileUpload2" class="file-upload" name="fileUpload2">
+                            <label for="fileUpload2" class="btn btn-primary">
+                                ⬆️
+                            </label>
+                        </td>
                     </tr>
                      <tr>
                         <td colspan="11" class="py-3">e) atestatul de producător, emis pe numele solicitantului, în termen de valabilitate la momentul înscrierii în aplicație</td>
-                        <td class="col-1"><button class="btn btn-primary">⬆️</button></td>
+                        <td class="col-1">
+                            <input type="file" id="fileUpload3" class="file-upload" name="fileUpload3">
+                            <label for="fileUpload3" class="btn btn-primary">
+                                ⬆️
+                            </label>
+                        </td>
                     </tr>
                 </tbody>
             </table>
             <input type="checkbox" id="checkbox" class="form-check-input"> Am citit si sunt de acord cu termenii și condițiile
             <div class="d-flex justify-content-between my-3">
-                <a href="index.html" type="button" class="btn btn-danger" data-bs-dismiss="modal">Restart</a>
-                 <a href="results.html" class="btn btn-primary" >Depune cererea</a>
-
+                <a href="index.html" type="button" class="btn btn-danger">Restart</a>
+                <button type="button" class="btn btn-primary" id="submitBtn" disabled>Depune dosar</button>
         </section>
     </div>
-    
+    <script>
+        var fileToUpload = 4;
+        var filesWereUpload = false;
+        var checkboxValue = false;
+        $(document).ready(function() {
+            $(".file-upload").change(function() {
+                $(this).prop("disabled", true);
+                 const $label = $(this).next();
+                $label.html("✅");
+                $label.removeClass("btn-primary").addClass("btn-green");
+                fileToUpload--;
+                checkIfAllFilesWereUploaded();
+            });
+            $("#checkbox").change(function() {
+                checkboxValue = $(this).is(":checked");
+                enableSubmitButton()
+            });
+            $("#submitBtn").click(function() {
+                if (filesWereUpload && checkboxValue) {
+                    window.location.href = "results.html";
+                } else {
+                    console.log("Va rugam sa completati toate campurile necesare!");
+                }
+            });
+        });
 
+        function checkIfAllFilesWereUploaded() {
+            if (fileToUpload <= 0){
+                filesWereUpload = true;
+                enableSubmitButton()
+            }
+            else{
+                filesWereUpload = false;
+            }
+        }
+
+        function enableSubmitButton() {
+            if (checkboxValue && filesWereUpload) {
+                $("#submitBtn").prop("disabled", false);
+            } else {
+                $("#submitBtn").prop("disabled", true);
+            }
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
