@@ -7,7 +7,7 @@ body {
 .container {
     max-width: 1100px;
     margin: 40px auto;
-    background: #fff;
+    background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     padding: 0 0 30px 0;
@@ -173,6 +173,12 @@ h1 {
     box-shadow: none;
 }
 
+.grey{
+    background: #f3f3f3;
+    width: 100%;
+    min-height: 20px;
+}
+
 .footer-warning {
     background: #fff3cd;
     color: #856404;
@@ -193,6 +199,17 @@ h1 {
     border-radius: 4px;
     font-weight: 600;
 }
+.btn-green{
+    background: #4caf50;
+    color: #fff;
+    cursor: default !important;
+}
+.btn-green:disabled{
+    background: #4caf50;
+    color: #fff;
+    cursor: default !important;
+}
+
 @media (max-width: 900px) {
     .container, .footer-warning {
         max-width: 98vw;
