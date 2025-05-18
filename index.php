@@ -41,7 +41,7 @@ if (isset($_GET['logout'])) {
                 <div class="navbar-user-info">
                     <span>Bună dimineața,<br><strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong></span>
 
-                    <a href='#'><small>TIMPI DUMNEAVOASTRĂ</small></a>
+                    <a href='yourTimes.php'><small>TIMPI DUMNEAVOASTRĂ</small></a>
                 </div>
                 <a href="?logout=1" class="btn btn-outline-danger">Deconectare</a>
             </div>
