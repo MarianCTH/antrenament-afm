@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -15,6 +16,7 @@
                 <div class="navbar-links">
                     <a href="#"><span>🏅</span>Leadertboard</a>
                     <a href="#"><span>📁</span>Dosar demo</a>
+                    <a href="index.php"><span>🔄</span>Reincercare</a>
                 </div>
             </div>
             <div class="navbar-user">
@@ -26,7 +28,7 @@
                 <button>Deconectare</button>
             </div>
         </nav>
-        <h1>Timpul tau: <span>1:00</span></h1>
+        <h1>Timpul tau: <span id="timer">--</span></h1>
         <section class="form-section">
             <div class="d-flex  justify-content-center">
                 <h2 class="my-5">🏆Cele mai bune timpuri🏆</h2>
@@ -55,7 +57,43 @@
             </table>
         </section>
     </div>
-
+    <script>
+        const timer = document.getElementById('timer');
+        var sTime = localStorage.getItem('timer-start');
+        sTime = parseInt(sTime, 10);
+        eTime = localStorage.getItem('timer-end');
+        eTime = parseInt(eTime, 10);
+        function updateTimer() {
+            if (sTime !== null) {
+                const elapsedTime = Math.floor((eTime - sTime) / 1000);
+                const minutes = Math.floor(elapsedTime / 60);
+                const seconds = elapsedTime % 60;
+                if(minutes < 1){
+                    if(seconds < 10){
+                        timer.textContent = `00:0${seconds}`;
+                    } else {
+                        timer.textContent = `00:${seconds}`;
+                    }
+                }
+                else if(minutes < 10){
+                    if(seconds < 10){
+                        timer.textContent = `0${minutes}:0${seconds}`;
+                    } else {
+                        timer.textContent = `0${minutes}:${seconds}`;
+                    }
+                } else {
+                    if(seconds < 10){
+                        timer.textContent = `${minutes}:0${seconds}`;
+                    } else {
+                        timer.textContent = `${minutes}:${seconds}`
+                    }
+                }
+            }
+        }
+        $(document).ready(function() {
+            updateTimer();
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

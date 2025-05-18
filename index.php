@@ -25,6 +25,9 @@ if (isset($_GET['logout'])) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    <div class="timer">
+        <span id="timer">Selectati programul Rabla pentru Tractoare a incepe!</span>
+    </div>
     <div class="container">
         <nav class="navbar">
             <div class="navbar-left">
@@ -48,7 +51,7 @@ if (isset($_GET['logout'])) {
             <label for="program-select">Selectați programul de finanțare pentru care doriți depunerea cererii</label>
             <select id="program-select">
                 <option> -- Selectați o sesiune aferentă programului de finanțare -- </option>
-                <option>Sesiune depunere dosare de finanțare tractoare și mașini agricole autopropulsate</option>
+                <option value="startTimer">Sesiune depunere dosare de finanțare tractoare și mașini agricole autopropulsate</option>
             </select>
             <div class="cards">
                 <div class="card corect">
@@ -69,7 +72,7 @@ if (isset($_GET['logout'])) {
                 </div>
             </div>
             <div class="container transparent d-flex justify-content-between">
-                <a href="CF_AFM_Tractoare_v1 .pdf" class="download-btn" download="CF_AFM_Tractoare_v1">⬇️ Descarcă model cerere</a>
+                <a href="CF_AFM_Tractoare_v1 .pdf" download="CF_AFM_Tractoare_v1"><button type="button" class="btn download-btn">⬇️ Descarcă model cerere</button></a>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="download-btn">⬆️ Incarcă model cerere</button>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -155,6 +158,55 @@ if (isset($_GET['logout'])) {
     $('#formFile').change(function() {
         fileUploaded = true;
     })
+
+    const timer = document.getElementById('timer');
+    
+    function startTime(){
+        sTime = Date.now();
+        localStorage.setItem('timer-start', sTime);
+    }
+
+    function updateTimer() {
+        if (sTime !== null) {
+            const elapsedTime = Math.floor((Date.now() - sTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            if(minutes < 1){
+                if(seconds < 10){
+                    timer.textContent = `00:0${seconds}`;
+                } else {
+                    timer.textContent = `00:${seconds}`;
+                }
+            }
+            else if(minutes < 10){
+                if(seconds < 10){
+                    timer.textContent = `0${minutes}:0${seconds}`;
+                } else {
+                    timer.textContent = `0${minutes}:${seconds}`;
+                }
+            } else {
+                if(seconds < 10){
+                    timer.textContent = `${minutes}:0${seconds}`;
+                } else {
+                    timer.textContent = `${minutes}:${seconds}`
+                }
+            }
+        }
+    }
+
+    $('#program-select').change(function() {
+        if ($(this).val() === 'startTimer') {
+            startTime();
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        } else {
+            timer.textContent = 'Selectati programul Rabla pentru Tractoare a incepe!';
+            localStorage.removeItem('timer-start');
+            sTime = null;
+        }
+    });
+
+    // setInterval(updateTimer, 1000);
 
     // Refresh captcha image
     function refreshCaptcha() {

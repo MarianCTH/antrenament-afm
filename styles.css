@@ -226,3 +226,16 @@ h1 {
 .file-upload {
     display: none;
 }
+
+.timer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2em;
+    margin-top: 18px;
+    background-color: green;
+    margin: 0 auto -20px auto;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
