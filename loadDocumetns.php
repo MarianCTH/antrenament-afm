@@ -1,3 +1,29 @@
+<?php
+session_start();
+require_once 'config/database.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
+
+// Handle submission time save
+if (isset($_POST['submission_time'])) {
+    $submission_time = (int)$_POST['submission_time'];
+    $stmt = $pdo->prepare("INSERT INTO leaderboard (user_id, submission_time) VALUES (?, ?)");
+    $stmt->execute([$_SESSION['user_id'], $submission_time]);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true]);
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -17,7 +43,7 @@
         <nav class="navbar">
             <div class="navbar-left">
                 <div class="navbar-links">
-                    <a href="#"><span>🏅</span>Leadertboard</a>
+                    <a href="leaderboard.php"><span>🏅</span>Leadertboard</a>
                     <a href="#"><span>📁</span>Dosar demo</a>
                     <a href="index.php"><span>🔄</span>Reincercare</a>
                 </div>
@@ -25,7 +51,7 @@
             <div class="navbar-user">
                 <div class="navbar-user-icon">👤</div>
                 <div class="navbar-user-info">
-                    <span>Bună dimineața,<br><strong>User</strong></span>
+                    <span>Bună dimineața,<br><strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong></span>
                     <a href='#'><small>TIMPI DUMNEAVOASTRĂ</small></a>
                 </div>
                 <button>Deconectare</button>
@@ -137,8 +163,26 @@
             });
             $("#submitBtn").click(function() {
                 if (filesWereUpload && checkboxValue) {
-                    localStorage.setItem("timer-end", Date.now());
-                    window.location.href = "results.html";
+                    const endTime = Date.now();
+                    const submissionTime = Math.floor((endTime - sTime) / 1000);
+                    
+                    // Save submission time to database
+                    $.ajax({
+                        url: 'loadDocumetns.php',
+                        type: 'POST',
+                        data: { submission_time: submissionTime },
+                        success: function(response) {
+                            if (response.success) {
+                                localStorage.setItem("timer-end", endTime);
+                                window.location.href = "results.html";
+                            } else {
+                                alert('Eroare la salvarea timpului. Vă rugăm să încercați din nou.');
+                            }
+                        },
+                        error: function() {
+                            alert('Eroare la salvarea timpului. Vă rugăm să încercați din nou.');
+                        }
+                    });
                 } else {
                     console.log("Va rugam sa completati toate campurile necesare!");
                 }

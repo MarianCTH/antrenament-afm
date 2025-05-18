@@ -32,7 +32,7 @@ if (isset($_GET['logout'])) {
         <nav class="navbar">
             <div class="navbar-left">
                 <div class="navbar-links">
-                    <a href="#"><span>🏅</span>Leadertboard</a>
+                    <a href="leaderboard.php"><span>🏅</span>Leadertboard</a>
                     <a href="#"><span>📁</span>Dosar demo</a>
                 </div>
             </div>
@@ -143,7 +143,7 @@ if (isset($_GET['logout'])) {
             success: function(response) {
                 console.log('Upload successful:', response); // No JSON.parse!
                 if (response.status === 'success') {
-                    window.location.href = 'loadDocumetns.html';
+                    window.location.href = 'loadDocumetns.php';
                 } else {
                     alert('Eroare: ' + response.message);
                 }
