@@ -15,10 +15,11 @@ if (isset($_GET['logout'])) {
 }
 
 // Handle submission time save
-if (isset($_POST['submission_time'])) {
+if (isset($_POST['submission_time']) && isset($_POST['fileName'])) {
+    $fileName = $_POST['fileName'];
     $submission_time = (int)$_POST['submission_time'];
-    $stmt = $pdo->prepare("INSERT INTO leaderboard (user_id, submission_time) VALUES (?, ?)");
-    $stmt->execute([$_SESSION['user_id'], $submission_time]);
+    $stmt = $pdo->prepare("INSERT INTO leaderboard (user_id, submission_time, idCerere) VALUES (?, ?, ?)");
+    $stmt->execute([$_SESSION['user_id'], $submission_time, $fileName]);
     header('Content-Type: application/json');
     echo json_encode(['success' => true]);
     exit();
@@ -136,7 +137,7 @@ if (isset($_POST['submission_time'])) {
             </table>
             <input type="checkbox" id="checkbox" class="form-check-input"> Am citit si sunt de acord cu termenii și condițiile
             <div class="d-flex justify-content-between my-3">
-                <a href="index.html" type="button" class="btn btn-danger">Restart</a>
+                <a href="loadDocumetns.php" type="button" class="btn btn-danger">Reset</a>
                 <button type="button" class="btn btn-primary" id="submitBtn" disabled>Depune dosar</button>
         </section>
     </div>
@@ -165,16 +166,17 @@ if (isset($_POST['submission_time'])) {
                 if (filesWereUpload && checkboxValue) {
                     const endTime = Date.now();
                     const submissionTime = Math.floor((endTime - sTime) / 1000);
+                    const fileName = localStorage.getItem("fileName");
                     
                     // Save submission time to database
                     $.ajax({
                         url: 'loadDocumetns.php',
                         type: 'POST',
-                        data: { submission_time: submissionTime },
+                        data: { submission_time: submissionTime, fileName: fileName },
                         success: function(response) {
                             if (response.success) {
                                 localStorage.setItem("timer-end", endTime);
-                                window.location.href = "results.html";
+                                window.location.href = "results.php";
                             } else {
                                 alert('Eroare la salvarea timpului. Vă rugăm să încercați din nou.');
                             }

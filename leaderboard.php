@@ -32,8 +32,9 @@ $leaderboard = $stmt->fetchAll();
         <nav class="navbar">
             <div class="navbar-left">
                 <div class="navbar-links">
-                    <a href="index.php"><span>🏠</span>Acasă</a>
-                    <a href="#"><span>📁</span>Dosar demo</a>
+                    <a href="leaderboard.php"><span>🏅</span>Leadertboard</a>
+                    <a href="DosarDemo.rar"><span>📁</span>Dosar demo</a>
+                    <a href="index.php"><span>🔄</span>Reincercare</a>
                 </div>
             </div>
             <div class="navbar-user">
@@ -54,6 +55,7 @@ $leaderboard = $stmt->fetchAll();
                             <th>Nume</th>
                             <th>Timp</th>
                             <th>Data depunerii</th>
+                            <th>Valid</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,6 +69,12 @@ $leaderboard = $stmt->fetchAll();
                                     echo sprintf("%02d:%02d", $minutes, $seconds);
                                 ?></td>
                                 <td><?php echo date('d.m.Y H:i:s', strtotime($entry['submission_date'])); ?></td>
+                                <td>
+                                    <?php if ($entry['validated']): ?>
+                                        <span class="badge bg-success">Dosar a fost validat</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-warning">Inca nu a fost validat</span>
+                                    <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

@@ -33,7 +33,7 @@ if (isset($_GET['logout'])) {
             <div class="navbar-left">
                 <div class="navbar-links">
                     <a href="leaderboard.php"><span>🏅</span>Leadertboard</a>
-                    <a href="#"><span>📁</span>Dosar demo</a>
+                    <a href="DosarDemo.rar"><span>📁</span>Dosar demo</a>
                 </div>
             </div>
             <div class="navbar-user">
@@ -72,8 +72,8 @@ if (isset($_GET['logout'])) {
                 </div>
             </div>
             <div class="container transparent d-flex justify-content-between">
-                <a href="CF_AFM_Tractoare_v1 .pdf" download="CF_AFM_Tractoare_v1"><button type="button" class="btn download-btn">⬇️ Descarcă model cerere</button></a>
-                <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="download-btn">⬆️ Incarcă model cerere</button>
+                <a id="dowload-link" href="CF_AFM_Tractoare_v1 .pdf" download="CF_AFM_Tractoare" class ="disabled-link"><button id="dowload-button" type="button" class="btn download-btn" disabled>⬇️ Descarcă model cerere</button></a>
+                <button id="uploadCerere" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn download-btn" disabled>⬆️ Incarcă model cerere</button>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog-centered modal-dialog">
@@ -121,6 +121,7 @@ if (isset($_GET['logout'])) {
     <script>
     var fileUploaded = false;
     var captchaValid = false;
+    var randomNumber;
     $('#saveChangesBtn').on('click', function() {
         if (!fileUploaded) {
             $('#captchaError').text('Trebuie să încărcați un fișier înainte de a salva modificările.').show();
@@ -131,8 +132,13 @@ if (isset($_GET['logout'])) {
             return;
         }
         var fileInput = $('#formFile')[0];
+        if ('CF_AFM_Tractoare' + randomNumber + '.pdf' !== fileInput.files[0].name) {
+            $('#captchaError').text('Vă rugăm să reîncărcați ultima cerere descarcata.').show();
+            return;
+        }
         var formData = new FormData();
-        formData.append('file', fileInput.files[0]);    
+        formData.append('file', fileInput.files[0]);   
+        localStorage.setItem('fileName', fileInput.files[0].name); 
 
         $.ajax({
             url: 'upload_handler.php',
@@ -196,17 +202,44 @@ if (isset($_GET['logout'])) {
 
     $('#program-select').change(function() {
         if ($(this).val() === 'startTimer') {
+            enableDowloadButton();
             startTime();
             updateTimer();
             setInterval(updateTimer, 1000);
         } else {
+            disableButtons();
             timer.textContent = 'Selectati programul Rabla pentru Tractoare a incepe!';
             localStorage.removeItem('timer-start');
             sTime = null;
         }
     });
 
+    $('#dowload-button').click(function() {
+        if (sTime !== null) {
+            enableModalButton();
+        } else {
+            disableButtons();
+        }
+    });
+
     // setInterval(updateTimer, 1000);
+
+    function enableDowloadButton() {
+        $('#dowload-link').removeClass('disabled-link');
+        $('#dowload-button').removeAttr('disabled');
+        randomNumber = Math.floor(Math.random() * 10000);
+         $('#dowload-link').attr('download', 'CF_AFM_Tractoare' + randomNumber);
+    }
+
+    function enableModalButton() {
+        $('#uploadCerere').removeAttr('disabled');
+    }
+
+    function disableButtons() {
+        $('#dowload-link').addClass('disabled-link');
+        $('#dowload-button').attr('disabled', 'disabled');
+        $('#uploadCerere').attr('disabled', 'disabled');
+    }
 
     // Refresh captcha image
     function refreshCaptcha() {

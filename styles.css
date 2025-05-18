@@ -140,6 +140,13 @@ h1 {
     text-align: center;
     font-size: 1.1em;
 }
+.disabled-link {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: gray;
+  }
+
 .card-label.corect {
     
     color: #4f971f;

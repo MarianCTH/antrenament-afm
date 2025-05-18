@@ -20,5 +20,7 @@ CREATE TABLE IF NOT EXISTS leaderboard (
     user_id INT NOT NULL,
     submission_time INT NOT NULL COMMENT 'Time in seconds',
     submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    validated BOOLEAN DEFAULT FALSE,
+    idCerere VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-); 
+);
