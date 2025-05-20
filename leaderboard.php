@@ -3,7 +3,8 @@ session_start();
 require_once 'config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 
@@ -22,7 +23,14 @@ $leaderboard = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - Depunere cerere</title>
+    <title>Clasament - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Vezi clasamentul participanților la Programul Rabla pentru Tractoare și mașini agricole autopropulsate.">
+    <meta name="keywords" content="clasament rabla tractoare, top program rabla, rezultate tractoare">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Clasament - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Vezi clasamentul participanților la Programul Rabla pentru Tractoare.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">

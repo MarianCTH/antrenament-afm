@@ -14,7 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
-            header('Location: index.php');
+            echo '<meta http-equiv="refresh" content="0;url=index.php">';
+            echo '<script>window.location.href = "index.php";</script>';
             exit();
         } else {
             $error = "Invalid email or password";
@@ -29,7 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Depunere cerere</title>
+    <title>Login - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Autentificare în platforma de depunere cereri pentru Programul Rabla pentru Tractoare și mașini agricole autopropulsate.">
+    <meta name="keywords" content="login rabla tractoare, autentificare program rabla, acces platforma tractoare">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Login - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Autentificare în platforma de depunere cereri pentru Programul Rabla pentru Tractoare.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">

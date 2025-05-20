@@ -42,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
             if ($stmt->execute([$name, $email, $hashed_password])) {
                 $_SESSION['success'] = "Registration successful! Please login.";
-                header('Location: login.php');
+                echo '<meta http-equiv="refresh" content="0;url=login.php">';
+                echo '<script>window.location.href = "login.php";</script>';
                 exit();
             } else {
                 $errors[] = "Registration failed. Please try again.";
@@ -56,7 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Depunere cerere</title>
+    <title>Înregistrare - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Creează un cont nou pentru a participa la Programul Rabla pentru Tractoare și mașini agricole autopropulsate.">
+    <meta name="keywords" content="înregistrare rabla tractoare, cont nou program rabla, creare cont tractoare">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Înregistrare - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Creează un cont nou pentru a participa la Programul Rabla pentru Tractoare.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">

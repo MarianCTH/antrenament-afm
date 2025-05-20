@@ -7,7 +7,8 @@ $error = null;
 $success = null;
 
 if (empty($token)) {
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 
@@ -47,7 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password - Depunere cerere</title>
+    <title>Resetare parolă - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Resetează parola contului pentru Programul Rabla pentru Tractoare și mașini agricole autopropulsate.">
+    <meta name="keywords" content="resetare parolă rabla tractoare, recuperare cont program rabla">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Resetare parolă - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Resetează parola contului pentru Programul Rabla pentru Tractoare.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">

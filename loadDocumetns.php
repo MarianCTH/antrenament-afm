@@ -3,14 +3,16 @@ session_start();
 require_once 'config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 

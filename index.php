@@ -2,27 +2,63 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
+
+// Get total uploads count
+require_once 'config/database.php';
+$stmt = $pdo->query("SELECT COUNT(*) as total FROM leaderboard");
+$totalUploads = $stmt->fetch()['total'];
 ?>
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Depunere cerere nouă</title>
+    <title>Depunere cerere nouă - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Depune cererea pentru Programul Rabla pentru Tractoare și mașini agricole autopropulsate. Simulare completă a procesului de depunere a dosarului.">
+    <meta name="keywords" content="rabla tractoare, program rabla, tractoare agricole, depunere cerere, finanțare tractoare">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Depunere cerere nouă - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Depune cererea pentru Programul Rabla pentru Tractoare și mașini agricole autopropulsate.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loader-content {
+            text-align: center;
+        }
+        .loader-content p {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <div class="timer">
@@ -67,7 +103,7 @@ if (isset($_GET['logout'])) {
                     <span class="card-label">Dupa ce dosarul este depus</span>
                 </div>
                 <div class="card">
-                    <strong>0</strong>
+                    <strong><?php echo $totalUploads; ?></strong>
                     <span class="card-label">Total incarcari simulate pe platforma</span>
                 </div>
             </div>
@@ -149,7 +185,24 @@ if (isset($_GET['logout'])) {
             success: function(response) {
                 console.log('Upload successful:', response); // No JSON.parse!
                 if (response.status === 'success') {
-                    window.location.href = 'loadDocumetns.php';
+                    // Create and show loader
+                    const loader = document.createElement('div');
+                    loader.className = 'loader-overlay';
+                    loader.innerHTML = `
+                        <div class="loader-content">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Se procesează dosarul...</p>
+                        </div>
+                    `;
+                    document.body.appendChild(loader);
+
+                    // Random delay between 4-8 seconds
+                    const delay = Math.floor(Math.random() * (3000 + 1)) + 2000;
+                    setTimeout(() => {
+                        window.location.href = 'loadDocumetns.php';
+                    }, delay);
                 } else {
                     alert('Eroare: ' + response.message);
                 }

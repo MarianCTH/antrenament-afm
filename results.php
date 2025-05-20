@@ -3,7 +3,8 @@ session_start();
 require_once 'config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 
@@ -23,7 +24,14 @@ $leaderboard = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Depunere cerere nouă</title>
+    <title>Rezultate - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Vezi rezultatele și timpii de depunere a cererilor în cadrul Programului Rabla pentru Tractoare.">
+    <meta name="keywords" content="rezultate rabla tractoare, timpi depunere, clasament tractoare">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Rezultate - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Vezi rezultatele și timpii de depunere a cererilor în cadrul Programului Rabla pentru Tractoare.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
@@ -101,30 +109,4 @@ $leaderboard = $stmt->fetchAll();
                 const seconds = elapsedTime % 60;
                 if(minutes < 1){
                     if(seconds < 10){
-                        timer.textContent = `00:0${seconds}`;
-                    } else {
-                        timer.textContent = `00:${seconds}`;
-                    }
-                }
-                else if(minutes < 10){
-                    if(seconds < 10){
-                        timer.textContent = `0${minutes}:0${seconds}`;
-                    } else {
-                        timer.textContent = `0${minutes}:${seconds}`;
-                    }
-                } else {
-                    if(seconds < 10){
-                        timer.textContent = `${minutes}:0${seconds}`;
-                    } else {
-                        timer.textContent = `${minutes}:${seconds}`
-                    }
-                }
-            }
-        }
-        $(document).ready(function() {
-            updateTimer();
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
-</html>
+                        timer.textContent = `00:0${seconds}`

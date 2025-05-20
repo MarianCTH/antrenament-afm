@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
-$dbname = 'antrenament_depunere';
-$username = 'root';
-$password = '';
+$dbname = 'czrsolut_antrenamenttractoare';
+$username = 'czrsolut_antrenamenttractoare';
+$password = 'zy.p9LX_MnzJ';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

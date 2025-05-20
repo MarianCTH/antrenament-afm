@@ -3,7 +3,8 @@ session_start();
 require_once 'config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    echo '<script>window.location.href = "login.php";</script>';
     exit();
 }
 
@@ -23,7 +24,14 @@ $userTimes = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timpii dumneavoastră - Depunere cerere</title>
+    <title>Timpii dumneavoastră - Program Rabla pentru Tractoare</title>
+    <meta name="description" content="Vizualizează istoricul timpilor de depunere a cererilor în cadrul Programului Rabla pentru Tractoare.">
+    <meta name="keywords" content="timpii rabla tractoare, istoric depuneri, rezultate personale tractoare">
+    <meta name="author" content="AFM">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Timpii dumneavoastră - Program Rabla pentru Tractoare">
+    <meta property="og:description" content="Vizualizează istoricul timpilor de depunere a cererilor în cadrul Programului Rabla pentru Tractoare.">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
